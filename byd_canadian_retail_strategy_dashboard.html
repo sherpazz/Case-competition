@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BYD Canada Retail Strategy Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+    </style>
+</head>
+<!-- Chosen Palette: Warm Neutral Harmony (Warm Stone/Slate base with subtle Emerald/Teal accents) -->
+<!-- Application Structure Plan:
+    1. Navigation Bar: Fixed top header with interactive section toggling.
+    2. Executive Overview & Metrics: Key metrics highlighting starting prices, tariff caps, and vertical integration cost advantages.
+    3. Research Sources Matrix: Interactive source analyzer with detail views for academic, market, and benchmark references.
+    4. Model Comparison & Analysis: Interactive comparison table & chart comparing Direct-to-Consumer (DTC), Traditional Franchise, and the Strategic Hybrid Model chosen for BYD.
+    5. Retail Mix Interactive Strategy: A tabbed component breaking down Product, Price, Promotion, and Place tactical initiatives.
+    6. Supply Chain & Cost Advantage: Visual bar chart showcasing vertical integration cost efficiency vs. legacy OEMs.
+    7. 24-Month Roadmap: Interactive timeline showing the phased execution plan.
+    This structure decomposes the academic and strategic document into logical, interactive modules that allow automotive executives and analysts to quickly synthesize key takeaways.
+-->
+<!-- Visualization & Content Choices:
+    - Business Model Evaluation: Chart.js Bar Chart comparing DTC, Franchise, and Hybrid across key operational dimensions.
+    - Cost Advantage: Chart.js Horizontal Bar Chart comparing BYD's in-house manufacturing cost breakdown with legacy OEM structures.
+    - Retail Mix: Interactive HTML/Tailwind tabbed interface displaying tactical executions.
+    - 24-Month Timeline: Clickable sequential process card layout.
+    - NO SVG graphics or Mermaid JS used. All visual displays rely strictly on Canvas (Chart.js) and structured Tailwind HTML/CSS layout.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<body class="bg-stone-50 text-stone-800 font-sans leading-relaxed antialiased">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-stone-900 text-stone-100 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="flex items-center space-x-3">
+                <span class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold tracking-widest uppercase">BYD</span>
+                <h1 class="text-lg sm:text-xl font-bold tracking-tight">Canada Strategy Center</h1>
+            </div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                <button onclick="scrollToSection('overview')" class="hover:text-emerald-400 transition-colors">Overview</button>
+                <button onclick="scrollToSection('sources')" class="hover:text-emerald-400 transition-colors">Research</button>
+                <button onclick="scrollToSection('model')" class="hover:text-emerald-400 transition-colors">Retail Model</button>
+                <button onclick="scrollToSection('cost')" class="hover:text-emerald-400 transition-colors">SCA & Supply Chain</button>
+                <button onclick="scrollToSection('retail-mix')" class="hover:text-emerald-400 transition-colors">Retail Mix</button>
+                <button onclick="scrollToSection('roadmap')" class="hover:text-emerald-400 transition-colors">Roadmap</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Section 1: Executive Summary & Context -->
+        <section id="overview" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8 space-y-6">
+            <div>
+                <span class="text-emerald-700 font-semibold text-xs tracking-wider uppercase">Strategic Entry Analysis</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-stone-900 mt-1">Canadian Market Entry & Strategic Positioning</h2>
+            </div>
+            <p class="text-stone-600 max-w-4xl">
+                This dashboard translates empirical market data and academic retail frameworks (Levy et al., McKinsey, Deloitte) into an operational strategy for BYD's entry into Canada. Operating under a 6.1% tariff capped under an annual quota of 49,000 units, BYD establishes a commercial footprint featuring entry models like the Dolphin (C$25,000) and Atto 3 (C$35,000) without relying on federal zero-emission vehicle rebates.
+            </p>
+
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                <div class="p-4 rounded-lg bg-stone-50 border border-stone-200">
+                    <p class="text-xs uppercase font-semibold text-stone-500">Annual Import Cap</p>
+                    <p class="text-2xl font-bold text-stone-900 mt-1">49,000 <span class="text-xs text-stone-500 font-normal">Units</span></p>
+                    <p class="text-xs text-emerald-700 mt-1">6.1% Tariff Capped</p>
+                </div>
+                <div class="p-4 rounded-lg bg-stone-50 border border-stone-200">
+                    <p class="text-xs uppercase font-semibold text-stone-500">Entry Price Point</p>
+                    <p class="text-2xl font-bold text-stone-900 mt-1">C$25,000</p>
+                    <p class="text-xs text-stone-500 mt-1">BYD Dolphin Starter</p>
+                </div>
+                <div class="p-4 rounded-lg bg-stone-50 border border-stone-200">
+                    <p class="text-xs uppercase font-semibold text-stone-500">In-House Manufacturing</p>
+                    <p class="text-2xl font-bold text-emerald-800 mt-1">75%</p>
+                    <p class="text-xs text-stone-500 mt-1">Vertical Component Integration</p>
+                </div>
+                <div class="p-4 rounded-lg bg-stone-50 border border-stone-200">
+                    <p class="text-xs uppercase font-semibold text-stone-500">Target Segment Openness</p>
+                    <p class="text-2xl font-bold text-stone-900 mt-1">56%</p>
+                    <p class="text-xs text-stone-500 mt-1">EV Intenders Open to Chinese Brands</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Core Research Sources Matrix -->
+        <section id="sources" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8 space-y-6">
+            <div>
+                <span class="text-emerald-700 font-semibold text-xs tracking-wider uppercase">Theoretical & Empirical Grounding</span>
+                <h2 class="text-2xl font-bold text-stone-900 mt-1">Synthesis of Core Research Sources</h2>
+            </div>
+            <p class="text-stone-600">
+                Explore the foundational sources supporting BYD's Canadian entry strategy. Click on any source to view its direct strategic application.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Source Selector List -->
+                <div id="source-list" class="space-y-2 md:col-span-1">
+                    <!-- Populated dynamically via JS -->
+                </div>
+                <!-- Source Detail View -->
+                <div id="source-detail" class="bg-stone-50 border border-stone-200 rounded-lg p-5 md:col-span-2 flex flex-col justify-between">
+                    <div>
+                        <span id="src-domain" class="text-xs font-bold text-emerald-700 uppercase tracking-wide">Category</span>
+                        <h3 id="src-title" class="text-lg font-bold text-stone-900 mt-1">Select a research source</h3>
+                        <div class="mt-3 space-y-3 text-sm text-stone-600">
+                            <div>
+                                <strong class="text-stone-800">Core Focus Area:</strong>
+                                <p id="src-focus">Details will display here.</p>
+                            </div>
+                            <div>
+                                <strong class="text-stone-800">Strategic Application to BYD:</strong>
+                                <p id="src-app">Details will display here.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-stone-200 text-xs text-stone-500">
+                        Reference Framework ID: <span id="src-id">--</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Retail Business Model Selection -->
+        <section id="model" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8 space-y-6">
+            <div>
+                <span class="text-emerald-700 font-semibold text-xs tracking-wider uppercase">Task 2 Model Analysis</span>
+                <h2 class="text-2xl font-bold text-stone-900 mt-1">Strategic Retail Format Evaluation</h2>
+            </div>
+            <p class="text-stone-600">
+                Evaluating three distinct retail formats: Direct-to-Consumer (DTC), Traditional Franchise Dealerships, and the chosen Strategic Hybrid Model. The Strategic Hybrid format optimizes capital efficiency while preserving brand control through urban experience boutique showrooms combined with outsourced service fulfillment.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Model Comparison Chart -->
+                <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-stone-700 text-center">Retail Model Dimension Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="retailModelChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Interactive Model Matrix Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b border-stone-200">
+                                <th class="p-2 font-semibold">Dimension</th>
+                                <th class="p-2 font-semibold">DTC</th>
+                                <th class="p-2 font-semibold">Franchise</th>
+                                <th class="p-2 font-semibold text-emerald-800 bg-emerald-50">Hybrid (Selected)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200">
+                            <tr>
+                                <td class="p-2 font-medium text-stone-900">CapEx Intensity</td>
+                                <td class="p-2 text-stone-600">Prohibitively High</td>
+                                <td class="p-2 text-stone-600">Low</td>
+                                <td class="p-2 font-medium text-emerald-900 bg-emerald-50/50">Moderate (Shared)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-stone-900">Price Control</td>
+                                <td class="p-2 text-stone-600">Total (National)</td>
+                                <td class="p-2 text-stone-600">Low (Markups)</td>
+                                <td class="p-2 font-medium text-emerald-900 bg-emerald-50/50">Total (Fixed Digital)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-stone-900">Brand Identity</td>
+                                <td class="p-2 text-stone-600">High</td>
+                                <td class="p-2 text-stone-600">Low Risk</td>
+                                <td class="p-2 font-medium text-emerald-900 bg-emerald-50/50">High (Urban Hubs)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-stone-900">Service Scalability</td>
+                                <td class="p-2 text-stone-600">Slow</td>
+                                <td class="p-2 text-stone-600">Rapid</td>
+                                <td class="p-2 font-medium text-emerald-900 bg-emerald-50/50">Rapid (Partnerships)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-medium text-stone-900">Inventory Holding</td>
+                                <td class="p-2 text-stone-600">High</td>
+                                <td class="p-2 text-stone-600">High</td>
+                                <td class="p-2 font-medium text-emerald-900 bg-emerald-50/50">Optimal (Regional Depots)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: SCA & Supply Chain Cost Advantage -->
+        <section id="cost" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8 space-y-6">
+            <div>
+                <span class="text-emerald-700 font-semibold text-xs tracking-wider uppercase">Sustainable Competitive Advantage</span>
+                <h2 class="text-2xl font-bold text-stone-900 mt-1">Vertical Supply Chain Integration</h2>
+            </div>
+            <p class="text-stone-600 max-w-4xl">
+                BYD's primary moat is built on 75% in-house manufacturing—including powertrains, microchips, and the proprietary LFP Blade Battery. This structure eliminates tier-1 supplier profit margins, delivering a 20%-30% manufacturing cost advantage over legacy competitors.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-stone-700 text-center">Cost Advantage vs. Legacy OEMs</h3>
+                    <div class="chart-container">
+                        <canvas id="costAdvantageChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200">
+                        <h4 class="font-bold text-emerald-900 text-sm">Blade Battery Safety & Reliability</h4>
+                        <p class="text-xs text-emerald-800 mt-1">
+                            Structural rigidity and thermal stability neutralize country-of-origin unreliability perceptions through rigorous nail-penetration tests and an 8-year / 160,000 km battery warranty.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-stone-50 border border-stone-200">
+                        <h4 class="font-bold text-stone-900 text-sm">Tariff Neutralization Strategy</h4>
+                        <p class="text-xs text-stone-600 mt-1">
+                            Even with Canada's 6.1% tariff and lack of federal EV subsidies, BYD's in-house cost efficiency enables a starting price of C$25,000 for the Dolphin while maintaining viable unit economics.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Retail Mix Execution Tabs -->
+        <section id="retail-mix" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8 space-y-6">
+            <div>
+                <span class="text-emerald-700 font-semibold text-xs tracking-wider uppercase">12-24 Month Operational Plan</span>
+                <h2 class="text-2xl font-bold text-stone-900 mt-1">The Strategic Retail Mix</h2>
+            </div>
+            <p class="text-stone-600">
+                Operationalizing Levy et al.'s four core pillars tailored to Canadian automotive consumers. Select a component below to inspect tactical execution plans.
+            </p>
+
+            <!-- Navigation Tabs -->
+            <div class="flex border-b border-stone-200 text-sm font-medium space-x-2">
+                <button onclick="switchTab('product')" id="tab-product" class="py-2 px-4 border-b-2 border-emerald-600 font-bold text-emerald-700">Product</button>
+                <button onclick="switchTab('price')" id="tab-price" class="py-2 px-4 border-b-2 border-transparent text-stone-500 hover:text-stone-800">Price</button>
+                <button onclick="switchTab('promotion')" id="tab-promotion" class="py-2 px-4 border-b-2 border-transparent text-stone-500 hover:text-stone-800">Promotion</button>
+                <button onclick="switchTab('place')" id="tab-place" class="py-2 px-4 border-b-2 border-transparent text-stone-500 hover:text-stone-800">Place (Distribution)</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="tab-content" class="p-4 bg-stone-50 rounded-lg border border-stone-200 min-h-[160px]">
+                <!-- Dynamic Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- Section 6: Rollout Roadmap -->
+        <section id="roadmap" class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 md:p-8 space-y-6">
+            <div>
+                <span class="text-emerald-700 font-semibold text-xs tracking-wider uppercase">Execution Timeline</span>
+                <h2 class="text-2xl font-bold text-stone-900 mt-1">24-Month Rollout Roadmap</h2>
+            </div>
+            <p class="text-stone-600">
+                Phased implementation strategy prioritizing infrastructure establishment, urban boutique launches, and regional fulfillment scaling across major metropolitan hubs.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Phase 1 -->
+                <div class="border-t-4 border-emerald-600 bg-stone-50 p-5 rounded-b-lg space-y-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Phase 1 (Months 1–6)</span>
+                    <h3 class="font-bold text-stone-900 text-base">Infrastructure & Strategic Partnerships</h3>
+                    <ul class="text-xs text-stone-600 space-y-2 list-disc list-inside">
+                        <li>Finalize agreements with certified regional service partners in ON, QC, BC, AB.</li>
+                        <li>Build central digital configuration platform with fixed national pricing.</li>
+                        <li>Establish import quota logistics under 49,000 unit limit.</li>
+                    </ul>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="border-t-4 border-emerald-500 bg-stone-50 p-5 rounded-b-lg space-y-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Phase 2 (Months 7–15)</span>
+                    <h3 class="font-bold text-stone-900 text-base">Urban Hub Touchpoint Launch</h3>
+                    <ul class="text-xs text-stone-600 space-y-2 list-disc list-inside">
+                        <li>Open first 20+ urban Experience Showrooms in premier shopping centers.</li>
+                        <li>Launch "Proof of Quality" educational campaigns and Blade Battery demos.</li>
+                        <li>Establish regional fulfillment depots on low-cost suburban sites.</li>
+                    </ul>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="border-t-4 border-stone-400 bg-stone-50 p-5 rounded-b-lg space-y-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-stone-600">Phase 3 (Months 16–24)</span>
+                    <h3 class="font-bold text-stone-900 text-base">Network Scaling & Model Expansion</h3>
+                    <ul class="text-xs text-stone-600 space-y-2 list-disc list-inside">
+                        <li>Evaluate initial delivery throughput and expand service partner bay allocations.</li>
+                        <li>Introduce the Seal executive sedan to the Canadian lineup.</li>
+                        <li>Optimize inventory turnover between digital orders and regional depots.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 py-6 text-center text-xs border-t border-stone-800 mt-12">
+        <p>BYD Canada Market Entry Research & Strategic Analysis | Based on Levy et al., Deloitte GACS & McKinsey Research</p>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // Smooth Scrolling Navigation
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Research Sources Data
+        const sourcesData = [
+            {
+                id: "levy2023",
+                domain: "Academic Textbook",
+                title: "Levy et al. — Retailing Management (Canadian Ed.)",
+                focus: "Strategic retail framework, target market identification, retail format selection, and sustainable competitive advantage (SCA).",
+                app: "Establishes core theoretical structure for BYD's Canadian entry, decoupling physical boutique stores from fulfillment warehouses to lower inventory holding costs."
+            },
+            {
+                id: "deloitte2025",
+                domain: "Industry Consumer Study",
+                title: "Deloitte — Global Automotive Consumer Study",
+                focus: "Canadian EV purchase barriers, brand trust, and openness toward Chinese EV brands.",
+                app: "Quantifies Canadian consumer target segments, confirming 56% openness to Chinese EVs when safety, battery quality, and price transparency are established."
+            },
+            {
+                id: "mckinsey2024",
+                domain: "Strategic Management",
+                title: "McKinsey & Co. — Automotive Retail Transformation",
+                focus: "Financial and operational trade-offs across DTC, Franchise, and Agency distribution structures.",
+                app: "Validates selecting a Strategic Hybrid Agency model to avoid high CapEx real estate burdens while maintaining fixed national digital pricing control."
+            },
+            {
+                id: "bnef2025",
+                domain: "Industrial Market Research",
+                title: "BloombergNEF / Industrial Supply Chain Benchmarks",
+                focus: "BYD's 75% in-house manufacturing integration and Blade Battery cost structure.",
+                app: "Quantifies BYD's 20%-30% structural cost advantage, allowing entry pricing starting at C$25,000 despite tariffs and lack of federal rebates."
+            },
+            {
+                id: "zheng2025",
+                domain: "Peer-Reviewed Literature",
+                title: "Zheng et al. / Aristanty et al. — Brand Equity & COO Effects",
+                focus: "Theory of Planned Behavior (TPB) and Customer-Based Brand Equity (CBBE) in EV adoption.",
+                app: "Proves that positive brand associations and warranty assurances neutralize negative Country-of-Origin stereotypes in high-involvement vehicle purchases."
+            },
+            {
+                id: "keyloop2024",
+                domain: "Retail Operations Benchmark",
+                title: "Keyloop & Group 1 Automotive Benchmark Reports",
+                focus: "Omnichannel execution, fixed pricing, and after-sales service profitability.",
+                app: "Outlines operational mechanics for urban showrooms and regional service fulfillment networks to protect operating margins."
+            }
+        ];
+
+        // Render Research Sources List
+        function renderSourceList() {
+            const container = document.getElementById('source-list');
+            container.innerHTML = sourcesData.map((src, index) => `
+                <button onclick="selectSource(${index})" class="w-full text-left p-3 rounded-lg border text-xs font-medium transition-all ${index === 0 ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'}">
+                    ${src.title}
+                </button>
+            `).join('');
+            selectSource(0);
+        }
+
+        function selectSource(index) {
+            const src = sourcesData[index];
+            document.getElementById('src-domain').innerText = src.domain;
+            document.getElementById('src-title').innerText = src.title;
+            document.getElementById('src-focus').innerText = src.focus;
+            document.getElementById('src-app').innerText = src.app;
+            document.getElementById('src-id').innerText = src.id;
+
+            // Highlight Active Button
+            const buttons = document.getElementById('source-list').children;
+            for (let i = 0; i < buttons.length; i++) {
+                if (i === index) {
+                    buttons[i].className = 'w-full text-left p-3 rounded-lg border text-xs font-medium transition-all bg-emerald-50 border-emerald-300 text-emerald-900';
+                } else {
+                    buttons[i].className = 'w-full text-left p-3 rounded-lg border text-xs font-medium transition-all bg-white border-stone-200 text-stone-700 hover:bg-stone-50';
+                }
+            }
+        }
+
+        // Retail Mix Tabs Data & Logic
+        const retailMixData = {
+            product: `
+                <h4 class="font-bold text-stone-900 text-sm">Product Strategy</h4>
+                <p class="text-xs text-stone-600 mt-2">
+                    Launch entry-level mass-market models: Dolphin hatchback (C$25,000) and Atto 3 crossover (C$35,000), followed by the Seal executive sedan.
+                </p>
+                <ul class="text-xs text-stone-600 mt-2 list-disc list-inside space-y-1">
+                    <li>Standard cold-weather package: high-efficiency heat pumps & battery thermal pre-conditioning.</li>
+                    <li>Industry-leading 8-year / 160,000 km Blade Battery warranty to build durability trust.</li>
+                </ul>
+            `,
+            price: `
+                <h4 class="font-bold text-stone-900 text-sm">Pricing Strategy</h4>
+                <p class="text-xs text-stone-600 mt-2">
+                    Disruptive positioning starting at C$25,000 without relying on federal zero-emission vehicle incentives.
+                </p>
+                <ul class="text-xs text-stone-600 mt-2 list-disc list-inside space-y-1">
+                    <li>Enforce strict single-price national agency model across digital portals and physical boutiques.</li>
+                    <li>Transparent, non-negotiable pricing eliminates traditional dealer markups and haggling friction.</li>
+                </ul>
+            `,
+            promotion: `
+                <h4 class="font-bold text-stone-900 text-sm">Promotion Strategy</h4>
+                <p class="text-xs text-stone-600 mt-2">
+                    Focus marketing efforts on Customer-Based Brand Equity through "Proof of Quality" educational campaigns.
+                </p>
+                <ul class="text-xs text-stone-600 mt-2 list-disc list-inside space-y-1">
+                    <li>Highlight Blade Battery structural safety demos (e.g., nail penetration video proof).</li>
+                    <li>Urban pop-up test drive experiences in Toronto, Vancouver, Montreal, and Calgary.</li>
+                </ul>
+            `,
+            place: `
+                <h4 class="font-bold text-stone-900 text-sm">Place (Distribution) Strategy</h4>
+                <p class="text-xs text-stone-600 mt-2">
+                    Deploy 20+ low-footprint "Experience Showrooms" in premier shopping centers (e.g., Yorkdale, Pacific Centre).
+                </p>
+                <ul class="text-xs text-stone-600 mt-2 list-disc list-inside space-y-1">
+                    <li>Decouple experience boutiques from physical vehicle inventory storage.</li>
+                    <li>Partner with established regional service networks & regional suburban depots for delivery and repairs.</li>
+                </ul>
+            `
+        };
+
+        function switchTab(tabKey) {
+            document.getElementById('tab-content').innerHTML = retailMixData[tabKey];
+            
+            const tabs = ['product', 'price', 'promotion', 'place'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tabKey) {
+                    btn.className = 'py-2 px-4 border-b-2 border-emerald-600 font-bold text-emerald-700';
+                } else {
+                    btn.className = 'py-2 px-4 border-b-2 border-transparent text-stone-500 hover:text-stone-800';
+                }
+            });
+        }
+
+        // Initialize Charts on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSourceList();
+            switchTab('product');
+
+            // Chart 1: Retail Model Comparison
+            const ctx1 = document.getElementById('retailModelChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'radar',
+                data: {
+                    labels: ['Capital Efficiency', 'Price Control', 'Brand Consistency', 'Service Scalability', 'Inventory Efficiency'],
+                    datasets: [
+                        {
+                            label: 'Strategic Hybrid (Selected)',
+                            data: [85, 95, 90, 85, 90],
+                            backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                            borderColor: 'rgb(5, 150, 105)',
+                            pointBackgroundColor: 'rgb(5, 150, 105)'
+                        },
+                        {
+                            label: 'Direct-to-Consumer (DTC)',
+                            data: [30, 100, 95, 40, 50],
+                            backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                            borderColor: 'rgb(217, 119, 6)',
+                            pointBackgroundColor: 'rgb(217, 119, 6)'
+                        },
+                        {
+                            label: 'Franchise Network',
+                            data: [90, 30, 40, 90, 40],
+                            backgroundColor: 'rgba(107, 114, 128, 0.2)',
+                            borderColor: 'rgb(107, 114, 128)',
+                            pointBackgroundColor: 'rgb(107, 114, 128)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e7e5e4' },
+                            grid: { color: '#e7e5e4' },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Chart 2: Cost Advantage Comparison
+            const ctx2 = document.getElementById('costAdvantageChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Powertrain', 'Battery Pack', 'Electronics', 'In-House Supply Shift'],
+                    datasets: [
+                        {
+                            label: 'BYD Cost Base',
+                            data: [65, 70, 75, 75],
+                            backgroundColor: 'rgb(5, 150, 105)'
+                        },
+                        {
+                            label: 'Legacy OEM Base',
+                            data: [100, 100, 100, 30],
+                            backgroundColor: 'rgb(168, 162, 158)'
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10 }, callback: value => value + '%' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ctx.dataset.label + ': ' + ctx.raw + '%'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
